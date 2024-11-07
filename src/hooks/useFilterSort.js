@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
 
-const useFilterSort = (recipes, selectedDifficulty, sortBy = 'name') => {
-  const [filteredSortedRecipes, setFilteredSortedRecipes] = useState([]);
+const useFilterSort = (hogs, selectedFilter = null, sortBy = 'name', hiddenHogs = []) => {
+  const [filteredSortedHogs, setFilteredSortedHogs] = useState([]);
 
   useEffect(() => {
-    // Filter recipes by difficulty if a selectedDifficulty is provided
-    let updatedRecipes = selectedDifficulty
-      ? recipes.filter(recipe => recipe.difficulty === selectedDifficulty)
-      : recipes;
+    // Filter out hidden hogs and apply selected filter
+    let updatedHogs = hogs.filter(hog => !hiddenHogs.includes(hog.name));
+    
+    if (selectedFilter) {
+      updatedHogs = updatedHogs.filter(hog => hog[selectedFilter.key] === selectedFilter.value);
+    }
 
-    // Sort recipes based on the 'sortBy' parameter
-    updatedRecipes = [...updatedRecipes].sort((a, b) => {
+    // Sort hogs based on the 'sortBy' parameter
+    updatedHogs = [...updatedHogs].sort((a, b) => {
       if (a[sortBy] < b[sortBy]) return -1;
       if (a[sortBy] > b[sortBy]) return 1;
       return 0;
     });
 
-    setFilteredSortedRecipes(updatedRecipes);
-  }, [recipes, selectedDifficulty, sortBy]);
+    setFilteredSortedHogs(updatedHogs);
+  }, [hogs, selectedFilter, sortBy, hiddenHogs]);
 
-  return filteredSortedRecipes;
+  return filteredSortedHogs;
 };
 
 export default useFilterSort;
