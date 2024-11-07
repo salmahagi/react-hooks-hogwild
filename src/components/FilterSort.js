@@ -1,5 +1,5 @@
 import React from 'react';
-import useFilterSort from '../hooks/useFilterSort.jsX';
+import useFilterSort from '../hooks/useFilterSort.js';
 
 function FilterSort() {
   const { filterByGreased, sortHogs } = useFilterSort();

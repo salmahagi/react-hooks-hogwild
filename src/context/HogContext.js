@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import porkersData from '../data/porkers_data.jsX';
+import porkersData from '../porkers_data.js';
 
 export const HogContext = createContext();
 
@@ -24,8 +24,16 @@ export const HogProvider = ({ children }) => {
     setHiddenHogs(prev => prev.includes(name) ? prev.filter(hog => hog !== name) : [...prev, name]);
   };
 
+  const toggleHogVisibility = (hogName) => {
+    setHogs((prevHogs) =>
+      prevHogs.map((hog) =>
+        hog.name === hogName ? { ...hog, hidden: !hog.hidden } : hog
+      )
+    );
+  };
+
   return (
-    <HogContext.Provider value={{ hogs, setFilteredHogs, filteredHogs, hiddenHogs, addNewHog, toggleHideHog }}>
+    <HogContext.Provider value={{ hogs, setFilteredHogs, filteredHogs, hiddenHogs, addNewHog, toggleHideHog, toggleHogVisibility }}>
       {children}
     </HogContext.Provider>
   );
