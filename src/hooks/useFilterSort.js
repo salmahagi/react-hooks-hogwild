@@ -1,21 +1,25 @@
-import { useContext, useEffect } from 'react';
-import { HogContext } from '../context/HogContext';
+import { useState, useEffect } from 'react';
 
-const useFilterSort = () => {
-  const { hogs, setFilteredHogs, hiddenHogs } = useContext(HogContext);
+const useFilterSort = (recipes, selectedDifficulty, sortBy = 'name') => {
+  const [filteredSortedRecipes, setFilteredSortedRecipes] = useState([]);
 
-  const filterByGreased = (isGreased) => {
-    setFilteredHogs(hogs.filter(hog => (isGreased ? hog.greased : true) && !hiddenHogs.includes(hog.name)));
-  };
+  useEffect(() => {
+    // Filter recipes by difficulty if a selectedDifficulty is provided
+    let updatedRecipes = selectedDifficulty
+      ? recipes.filter(recipe => recipe.difficulty === selectedDifficulty)
+      : recipes;
 
-  const sortHogs = (sortBy) => {
-    setFilteredHogs(prevHogs => [...prevHogs].sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      return a.weight - b.weight;
-    }));
-  };
+    // Sort recipes based on the 'sortBy' parameter
+    updatedRecipes = [...updatedRecipes].sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) return -1;
+      if (a[sortBy] > b[sortBy]) return 1;
+      return 0;
+    });
 
-  return { filterByGreased, sortHogs };
+    setFilteredSortedRecipes(updatedRecipes);
+  }, [recipes, selectedDifficulty, sortBy]);
+
+  return filteredSortedRecipes;
 };
 
 export default useFilterSort;
